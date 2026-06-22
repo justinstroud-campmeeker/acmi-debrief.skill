@@ -7,11 +7,14 @@ description: >
   has a .acmi or .zip.acmi file (from IL-2 Sturmovik, DCS World, MSFS, X-Plane,
   or any Tacview source) and wants to know what happened in a sortie, who they
   killed, how a dogfight or strafing run went, or wants a debrief / war story /
-  mission recap from flight-sim telemetry. Trigger even when the user doesn't say
-  "ACMI" — phrases like "debrief my flight", "what happened in that engagement",
-  "tell the story of this dogfight", "did I get that kill", "analyze my Tacview
-  track", or pointing at a Tracks folder all apply. Also use to triage a folder
-  of recordings to find the one with a real engagement.
+  mission recap from flight-sim telemetry. ALSO use it for IL-2 `missionReport`
+  text logs (missionReport(date)[n].txt) — the discrete event logs with
+  authoritative kills, hits, damage, and ammo — either on their own when no track
+  was recorded, or alongside a .acmi to confirm geometric kills. Trigger even when
+  the user doesn't say "ACMI" — phrases like "debrief my flight", "what happened
+  in that engagement", "tell the story of this dogfight", "did I get that kill",
+  "analyze my Tacview track", "read my mission log", or pointing at a Tracks folder
+  all apply. Also use to triage a folder of recordings to find the best engagement.
 ---
 
 # ACMI Combat Debrief
@@ -73,7 +76,44 @@ Write the result to a markdown file in `/mnt/user-data/outputs/` and present it.
 
 ---
 
-## Reading the beat sheet
+## Working from IL-2 mission logs (no track file, or to confirm one)
+
+IL-2 also writes `missionReport(<date>)[n].txt` event logs (in `data/`, enabled
+under `[KEY = system]` in `startup.cfg`). Where the ACMI gives continuous geometry
+but **no weapon data**, these logs give the opposite — authoritative discrete
+events: kills with shooter→target attribution, every hit with its ammo type,
+damage, and ammo expenditure. Use them two ways:
+
+**Log-only** (no `.acmi` was recorded — common when the user forgot to hit record):
+```
+python3 scripts/missionreport.py "missionReport(DATE)[0].txt" "...[1].txt" ... --summary
+```
+Pass **all numbered chunks of one mission together** — IL-2 splits a single
+mission's log across files `[0]`, `[1]`, … and they parse as one stream. The
+script emits the same kind of beat sheet, so the three render modes work
+identically. It carries authoritative kills, hits, ammo, who-killed-whom, and
+altitude/position fixes from the kill/death events (coarser than a track — fixes,
+not a continuous path — but the events are ground truth).
+
+**Confirmation/augment** (you have both): run both scripts. The ACMI gives the
+maneuver geometry (bounce, energy, aspect); the log confirms the kill, names the
+shooter, and reports the ammo and strike count. Narrate "confirmed kill, 20 mm
+cannon, N strikes" instead of "probable kill (geometric)". Full automatic fusion
+(matching kills across the two coordinate systems) is a future enhancement; for
+now, cross-reference by time and the kill position by hand — they line up.
+
+What the log beat sheet gives you: `kills` (with victim + country), `kill_credits`
+vs `distinct_victims` (crew/gunner kills inflate credits above airframes — say so),
+`death` (killer id), `strikes_landed`/`strikes_taken`, `hits_by_target` and
+`hits_by_shooter`, `ammo_used`, and `altitude_start/end` + `position_fixes`. The
+`player.side`/`presenter` drives commander mode exactly as the ACMI path does.
+
+Caveats to narrate honestly: kill *credits* ≠ airframes; the player's aircraft type
+is often absent (their plane isn't logged as a spawn — infer from ammo/role and say
+it's inferred); and the in-sim date/map lives in the `[0]` chunk, so it's "unknown"
+if early chunks aren't provided.
+
+---
 
 Top level: `sim_date`, `duration_s`, `player` (aircraft, callsign, coalition,
 and a `service`/`presenter` flavor), `forces` (counts + rosters), and
