@@ -69,13 +69,13 @@ Skills live in a `skills/` directory and are auto-discovered — clone this repo
 **Personal** (available in every project):
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/acmi-debrief.git ~/.claude/skills/acmi-debrief
+git clone https://github.com/justinstroud-campmeeker/acmi-debrief.git ~/.claude/skills/acmi-debrief
 ```
 
 **Project-scoped** (committed with a repo, shared with collaborators):
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/acmi-debrief.git .claude/skills/acmi-debrief
+git clone https://github.com/justinstroud-campmeeker/acmi-debrief.git .claude/skills/acmi-debrief
 ```
 
 On Windows the personal path is `%USERPROFILE%\.claude\skills\acmi-debrief`. The paths are otherwise identical across macOS, Linux, and Windows.
@@ -87,7 +87,7 @@ Start a **new** Claude session after installing so the skill is discovered, then
 ### As a standalone CLI (no agent required)
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/acmi-debrief.git
+git clone https://github.com/justinstroud-campmeeker/acmi-debrief.git
 cd acmi-debrief
 python3 scripts/acmi_debrief.py --triage /path/to/Tracks
 ```
