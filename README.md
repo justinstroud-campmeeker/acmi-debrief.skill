@@ -1,3 +1,8 @@
+# Example of Output
+
+https://gist.github.com/justinstroud-campmeeker/381ddc37375fec5298fc577b601f425b#file-ground-attack-md
+
+
 # ACMI Debrief
 
 **Turn a Tacview flight recording into a verified after-action debrief — as a gripping first-person story, a clinical AAR, or your CO's voice at the plotting board.**
